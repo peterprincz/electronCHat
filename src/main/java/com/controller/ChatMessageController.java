@@ -25,8 +25,8 @@ public class ChatMessageController {
         this.chatService = chatService;
     }
 
-    @MessageMapping("/send-message")
-    @SendTo("/topic/messages")
+    @MessageMapping("/chatroom/1/new-message")
+    @SendTo("/frontend-listener/chatroom/1/new-message")
     public ResponseEntity sendMessage(ChatMessage chatMessageFromJS) {
         ChatMessage cm = chatService.saveMessage(chatMessageFromJS);
         return ResponseEntity.ok(cm);

@@ -24,16 +24,15 @@ app.controller('messageController', function($scope, $http) {
 
 
     function connectToSocket() {
-        console.log($scope.serverUrl + '/gs-guide-websocket');
-        var socket = new SockJS($scope.serverUrl + '/gs-guide-websocket');
+        console.log($scope.serverUrl + '/chatty-websocket');
+        var socket = new SockJS($scope.serverUrl + '/chatty-websocket');
         $scope.stompClient = Stomp.over(socket);
         $scope.stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             getMessages();
-            $scope.stompClient.subscribe('/topic/messages', function (message) {
-                $scope.room.chatMessages.push(JSON.parse(message.body).body)
+            $scope.stompClient.subscribe('/frontend-listener/chatroom/1/new-message', function (message) {
+                $scope.room.chatMessages.push(JSON.parse(message.body).body);
                 $scope.$apply();
-                //$scope.room.chatMessages.push(JSON.parse(message.body));
             });
         });
     }
@@ -52,7 +51,7 @@ app.controller('messageController', function($scope, $http) {
 
 
     function sendMessage(messageJsonObject) {
-        $scope.stompClient.send("/app/send-message", {}, messageJsonObject);
+        $scope.stompClient.send("/backend-listener/chatroom/1/new-message", {}, messageJsonObject);
     }
 
 

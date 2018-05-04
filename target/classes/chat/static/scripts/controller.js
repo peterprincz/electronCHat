@@ -24,15 +24,15 @@ app.controller('messageController', function($scope, $http) {
 
 
     function connectToSocket() {
-        console.log($scope.serverUrl + '/gs-guide-websocket');
+        console.log($scope.serverUrl + '/chatty-websocket');
         var socket = new SockJS($scope.serverUrl + '/gs-guide-websocket');
         $scope.stompClient = Stomp.over(socket);
         $scope.stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             getMessages();
-            $scope.stompClient.subscribe('/topic/messages', function (message) {
-                console.log(message);
-                console.log($scope.room);
+            $scope.stompClient.subscribe('/frontend-listener/chatroom/1/new-message', function (message) {
+                $scope.room.chatMessages.push(JSON.parse(message.body).body);
+                $scope.$apply();
                 //$scope.room.chatMessages.push(JSON.parse(message.body));
             });
         });
@@ -43,7 +43,8 @@ app.controller('messageController', function($scope, $http) {
             url: $scope.serverUrl + "/get-room-by-id/" + $scope.roomId,
             method: "GET"
         }).then(function successCallback(response) {
-            $scope.room.chatMessages.push(JSON.parse(temp1.body).body);
+            $scope.room = response.data;
+            console.log($scope.room);
         }, function errorCallback(response) {
             console.log(response)
         });
@@ -51,7 +52,7 @@ app.controller('messageController', function($scope, $http) {
 
 
     function sendMessage(messageJsonObject) {
-        $scope.stompClient.send("/app/send-message", {}, messageJsonObject);
+        $scope.stompClient.send("/backend-listener/chatroom/1/new-message", {}, messageJsonObject);
     }
 
 
