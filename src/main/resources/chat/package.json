@@ -1,0 +1,17 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "kocka"
+  ],
+  "author": "kocka",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^2.0.0"
+  }
+}

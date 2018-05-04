@@ -1,0 +1,87 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="static/CSS/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/CSS/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+    <script type="text/javascript" src="static/scripts/frameWorks/angular.min.js"></script>
+    <script type="text/javascript" src="static/scripts/frameWorks/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="static/scripts/frameWorks/jquery.js"></script>
+    <script type="text/javascript" src="static/scripts/frameWorks/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/scripts/frameWorks/sockjs.min.js"></script>
+    <script type="text/javascript" src="static/scripts/frameWorks/stomp.min.js"></script>
+    <script type="text/javascript" src="static/scripts/controller.js"></script>
+    <title>Hello</title>
+</head>
+<body ng-app="myApp">
+
+    <div ng-controller="messageController" class="container">
+    
+    <div class="chat col-md-9 col-md-offset-4">
+      <div class="chat-header clearfix">
+
+        <div class="chat-about">
+          <div class="chat-with">ChatRoom number 1</div>
+          <div class="chat-num-messages">already 1 902 messages</div>
+        </div>
+        <i class="fa fa-star"></i>
+      </div> <!-- end chat-header -->
+      
+      <div class="chat-history">
+        <ul>
+          <li ng-repeat="chatMessage in room.chatMessages" class="clearfix">
+            <div class="message-data align-right">
+              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+              <span class="message-data-name" >{{chatMessage.sender}}</span>
+                <!-- <i class="fa fa-circle me"></i> -->
+            </div>
+            <div class="message other-message float-right">
+              {{chatMessage.content}}
+            </div>
+          </li>
+
+          </ul>
+
+        </div> <!-- end chat-history -->
+      
+      <div class="chat-message clearfix">
+          <form>
+            <textarea data-ng-model="chatMessage" name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
+            <button ng-click="sendChatMessage()">Send</button>
+          </form>
+        <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+        <i class="fa fa-file-image-o"></i>
+
+      </div> <!-- end chat-message -->
+      
+    </div> <!-- end chat -->
+    
+  </div> <!-- end container -->
+
+
+</body>
+
+<!--
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="messageController">
+            <div>
+                <div ng-repeat="chatMessage in room.chatMessages">
+                    <div>
+                        {{chatMessage.sender}}
+                    </div>
+                    <div>
+                        {{chatMessage.content}}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <form>
+                    <input data-ng-model="chatMessage" name="message">message</input>
+                    <button ng-click="sendChatMessage()"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
