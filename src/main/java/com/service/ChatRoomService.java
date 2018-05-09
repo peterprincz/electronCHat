@@ -36,4 +36,17 @@ public class ChatRoomService {
     }
 
 
+    public ChatRoom addUserToRoom(String userName, long roomId) {
+        ChatRoom cr = chatRoomDAO.findById(roomId).get();
+        cr.addMember(userName);
+        chatRoomDAO.save(cr);
+        return cr;
+    }
+
+    public ChatRoom removeUserFromRoom(String userName, long l) {
+        ChatRoom cr = chatRoomDAO.findById(l).get();
+        cr.removeMember(userName);
+        chatRoomDAO.save(cr);
+        return cr;
+    }
 }

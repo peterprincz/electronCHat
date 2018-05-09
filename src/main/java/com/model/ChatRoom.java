@@ -35,7 +35,9 @@ public class ChatRoom {
     }
 
     public void addMember(String member){
-        this.members.add(member);
+        if(!this.members.contains(member)) {
+            this.members.add(member);
+        }
     }
 
     public Long getId() {
@@ -68,5 +70,11 @@ public class ChatRoom {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void removeMember(String member) {
+        if(!this.members.contains(member)) {
+            this.members.remove(member);
+        }
     }
 }

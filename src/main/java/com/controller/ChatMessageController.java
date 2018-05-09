@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin
@@ -25,12 +23,14 @@ public class ChatMessageController {
         this.chatService = chatService;
     }
 
-    @MessageMapping("/chatroom/1/new-message")
-    @SendTo("/frontend-listener/chatroom/1/new-message")
+    @MessageMapping("/chatroom/{roomId}/new-message")
+    @SendTo("/frontend-listener/chatroom/{roomId}/new-message")
     public ResponseEntity sendMessage(ChatMessage chatMessageFromJS) {
         ChatMessage cm = chatService.saveMessage(chatMessageFromJS);
         return ResponseEntity.ok(cm);
     }
+
+
 
     @GetMapping("/get-all-messages")
     public ResponseEntity getMessages(){

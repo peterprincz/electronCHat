@@ -1,50 +1,58 @@
 var app = angular.module('myApp', []);
 app.controller('messageController', function($scope, $http) {
-    $scope.roomId = 1;
-    $scope.userName = "Kocka";
+    $scope.connectedRoomId = -1;
+    $scope.userName = "kocka2";
     $scope.serverUrl = "http://localhost:8080";
+    $scope.isPeopleListShown = true;
+    $scope.isRoomListShow = false;
 
-    connectToSocket();
+    $http({
+        url: $scope.serverUrl + "/get-all-room",
+        method: "GET"
+    }).then(function successCallback(response) {
+        $scope.rooms = response.data;
+    }, function errorCallback(response) {
+        console.log(response)
+    });
+
 
     $scope.sendChatMessage = function(){
         let chatMessageObject = JSON.stringify({"content":$scope.chatMessage,
                                                 "sender":$scope.userName,
-                                                "chatRoomId":$scope.roomId});
-        console.log(chatMessageObject);
+                                                "chatRoomId":$scope.connectedRoomId});
         sendMessage(chatMessageObject);
         $scope.chatMessage = "";
     };
 
-    $scope.logmessage =function(){
-        console.log($scope.chatMessage);
-        $scope.chatMessage = "";
+    $scope.changeRoom = function (roomId) {
+        $scope.connectedRoomId = roomId;
+        $scope.connectToRoom();
     }
 
-    var stompClient = null;
-
-
-    function connectToSocket() {
-        console.log($scope.serverUrl + '/chatty-websocket');
-        var socket = new SockJS($scope.serverUrl + '/gs-guide-websocket');
+    $scope.connectToRoom = function() {
+        if($scope.stompClient != undefined){
+            $scope.stompClient.disconnect();
+            removeSelfFromRoom();
+        }
+        addSelfToRoom();
+        var socket = new SockJS($scope.serverUrl + '/chatty-websocket');
         $scope.stompClient = Stomp.over(socket);
         $scope.stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
             getMessages();
-            $scope.stompClient.subscribe('/frontend-listener/chatroom/1/new-message', function (message) {
+
+            $scope.stompClient.subscribe('/frontend-listener/chatroom/'+ $scope.connectedRoomId +'/new-message', function (message) {
                 $scope.room.chatMessages.push(JSON.parse(message.body).body);
                 $scope.$apply();
-                //$scope.room.chatMessages.push(JSON.parse(message.body));
             });
         });
-    }
+    };
 
     function getMessages() {
         $http({
-            url: $scope.serverUrl + "/get-room-by-id/" + $scope.roomId,
+            url: $scope.serverUrl + "/get-room-by-id/" + $scope.connectedRoomId,
             method: "GET"
         }).then(function successCallback(response) {
             $scope.room = response.data;
-            console.log($scope.room);
         }, function errorCallback(response) {
             console.log(response)
         });
@@ -52,10 +60,48 @@ app.controller('messageController', function($scope, $http) {
 
 
     function sendMessage(messageJsonObject) {
-        $scope.stompClient.send("/backend-listener/chatroom/1/new-message", {}, messageJsonObject);
+        $scope.stompClient.send("/backend-listener/chatroom/"+ $scope.connectedRoomId +"/new-message", {}, messageJsonObject);
     }
 
 
+    $scope.showRooms = function () {
+        $scope.isRoomListShown = true;
+        $scope.isPeopleListShown = false;
 
+    };
+
+    $scope.showPeople = function () {
+        $scope.isRoomListShown = false;
+        $scope.isPeopleListShown = true;
+    };
+
+    function addSelfToRoom(){
+        $http({
+            url: $scope.serverUrl + "/join-room",
+            method: "post",
+            data: {userName:$scope.userName, roomId:$scope.connectedRoomId},
+            headers: { "Content-Type": "application/json" },
+            dataType : 'json'
+        }).then(function successCallback(response) {
+            console.log(response.data);
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    }
+
+    function removeSelfFromRoom(){
+        $http({
+            url: $scope.serverUrl + "/leave-room",
+            method: "post",
+            data: {userName:$scope.userName, roomId:$scope.connectedRoomId},
+            headers: { "Content-Type": "application/json" },
+            dataType : 'json'
+        }).then(function successCallback(response) {
+            console.log(response.data);
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    }
 
 });
+

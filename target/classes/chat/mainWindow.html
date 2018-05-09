@@ -15,22 +15,57 @@
 <body ng-app="myApp">
 
     <div ng-controller="messageController" class="container">
-    
-    <div class="chat col-md-9 col-md-offset-4">
+    <div class="col-md-3">
+        <div style="padding: 20px">
+            LOGO
+        </div>
+        <div>
+            <button ng-click="showRooms()">Rooms</button>
+            <button ng-click="showPeople()">People</button>
+        </div>
+        <div class="search">
+            <input type="text" placeholder="search" />
+        </div>
+        <div  ng-if="isPeopleListShown" class="people-list">
+            <ul class="list">
+                <li ng-repeat="member in room.members track by $index">
+                <div class="about">
+                    <div class="name">{{member}}</div>
+                    <div class="status">
+                        <i class="fa fa-circle online"></i> online
+                    </div>
+                </div>
+                </li>
+            </ul>
+        </div>
+        <div ng-if="isRoomListShown" class="people-list">
+            <ul class="list">
+                <li ng-repeat="room in rooms">
+                    <div ng-click="changeRoom(room.id)">
+                        <div class="name">{{room.name}}</div>
+                        <div class="status">
+                            {{room.members.length}} member
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="chat col-md-9">
       <div class="chat-header clearfix">
 
         <div class="chat-about">
           <div class="chat-with">ChatRoom number 1</div>
-          <div class="chat-num-messages">already 1 902 messages</div>
+          <div class="chat-num-messages">already {{room.chatMessages.length}} messages</div>
         </div>
-        <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
       </div> <!-- end chat-header -->
       
       <div class="chat-history">
         <ul>
-          <li ng-repeat="chatMessage in room.chatMessages" class="clearfix">
+          <li ng-repeat="chatMessage in room.chatMessages | limitTo:quantity" class="clearfix">
             <div class="message-data align-right">
-              <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+              <span class="message-data-time" >{{chatMessage.date * 1000 | date:'yyyy-MM-dd HH:mm:ss'}}</span> &nbsp; &nbsp;
               <span class="message-data-name" >{{chatMessage.sender}}</span>
                 <!-- <i class="fa fa-circle me"></i> -->
             </div>
@@ -60,28 +95,4 @@
 
 </body>
 
-<!--
-<body>
-    <div ng-app="myApp">
-        <div ng-controller="messageController">
-            <div>
-                <div ng-repeat="chatMessage in room.chatMessages">
-                    <div>
-                        {{chatMessage.sender}}
-                    </div>
-                    <div>
-                        {{chatMessage.content}}
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <form>
-                    <input data-ng-model="chatMessage" name="message">message</input>
-                    <button ng-click="sendChatMessage()"></button>
-                </form>
-            </div>
-        </div>
-    </div>
-</body>
 

@@ -15,6 +15,8 @@ public class ChatMessage {
     private String content;
     private String sender;
 
+    private Long date;
+
     private Long chatRoomId;
 
     public ChatMessage(){}
@@ -23,6 +25,7 @@ public class ChatMessage {
         this.chatRoomId = chatRoomId;
         this.content = content;
         this.sender = sender;
+        this.date = System.currentTimeMillis() / 1000L;
     }
 
 
@@ -57,6 +60,14 @@ public class ChatMessage {
 
     public void setChatRoomId(Long chatRoomId) {
         this.chatRoomId = chatRoomId;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     @Override
